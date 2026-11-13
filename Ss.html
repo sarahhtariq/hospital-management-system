@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    :root {
+        box-sizing: border-box;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        --bg: #e9f6f2;
+        --panel: #fff;
+        --ink: #12263a;
+        --mute: #5d7184;
+        --line: #d9e2e8;
+        --accent: #0b8a7e;
+        --accent-ink: #fff;
+        --warn: #c8442f;
+        --ok: #2f8f5b;
+        --soft: #d7f0ea
+    }
+
+    :root:not([data-theme="light"]) {}
+
+    @media (prefers-color-scheme:dark) {
+        :root:not([data-theme="light"]) {
+            --bg: #0f1b26;
+            --panel: #16283a;
+            --ink: #e6eef4;
+            --mute: #92a6b8;
+            --line: #25394c;
+            --accent: #3fb3bd;
+            --accent-ink: #06222a;
+            --warn: #ef7c68;
+            --ok: #5cc58b;
+            --soft: #173a45
+        }
+    }
+
+    :root[data-theme="dark"] {
+        --bg: #0f1b26;
+        --panel: #16283a;
+        --ink: #e6eef4;
+        --mute: #92a6b8;
+        --line: #25394c;
+        --accent: #3fb3bd;
+        --accent-ink: #06222a;
+        --warn: #ef7c68;
+        --ok: #5cc58b;
+        --soft: #173a45
+    }
+
+    html {
+        scroll-padding-top: env(safe-area-inset-top, 0px)
+    }
+
+    *,
+    *::before,
+    *::after {
+        box-sizing: border-box
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 15px/1.5 Figtree, system-ui, -apple-system, Segoe UI, sans-serif
+    }
+
+    header {
+        background: var(--panel);
+        border-bottom: 1px solid var(--line);
+        position: sticky;
+        top: env(safe-area-inset-top, 0px);
+        z-index: 5
+    }
+
+    .bar {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap
+    }
+
+    .brand {
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: -.01em
+    }
+
+    .brand i {
+        display: inline-block;
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: var(--accent);
+        margin-right: 8px;
+        vertical-align: -4px;
+        position: relative
+    }
+
+    .brand i::before,
+    .brand i::after {
+        content: "";
+        position: absolute;
+        background: var(--accent-ink);
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%)
+    }
+
+    .brand i::before {
+        width: 12px;
+        height: 4px
+    }
+
+    .brand i::after {
+        width: 4px;
+        height: 12px
+    }
+
+    nav {
+        display: flex;
+        gap: 4px;
+        overflow-x: auto
+    }
+
+    nav button {
+        border: 0;
+        background: none;
+        color: var(--mute);
+        font: 600 14px Figtree, sans-serif;
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer
+    }
+
+    nav button.on {
+        background: var(--soft);
+        color: var(--accent)
+    }
+
+    main {
+        max-width: 1100x;
+        margin: 0 auto;
+        padding: 20px 16px 48px
+    }
+
+    h2 {
+        font-size: 22px;
+        margin: 0 0 14px;
+        letter-spacing: -.01em
+    }
+
+    h3 {
+        font-size: 15px;
+        margin: 0 0 10px
+    }
+
+    .grid {
+        display: grid;
+        gap: 14px
+    }
+
+    .stats {
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        margin-bottom: 16px
+    }
+
+    .two {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr))
+    }
+
+    .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px
+    }
+
+    .stat b {
+        display: block;
+        font-size: 30px;
+        line-height: 1.1;
+        font-weight: 700
+    }
+
+    .stat span {
+        color: var(--mute);
+        font-size: 13px
+    }
+
+    .meter {
+        height: 10px;
+        background: var(--soft);
+        border-radius: 6px;
+        overflow: hidden;
+        margin: 8px 0 4px
+    }
+
+    .meter div {
+        height: 100%;
+        background: var(--accent)
+    }
+
+    .form {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+        align-items: end;
+        margin-bottom: 16px
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+        font-size: 13px;
+        color: var(--mute);
+        gap: 4px
+    }
+
+    input,
+    select {
+        font: 15px Figtree, sans-serif;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--ink);
+        min-width: 0
+    }
+
+    input:focus,
+    select:focus,
+    button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 1px
+    }
+
+    .btn {
+        font: 600 14px Figtree, sans-serif;
+        background: var(--accent);
+        color: var(--accent-ink);
+        border: 0;
+        border-radius: 8px;
+        padding: 9px 14px;
+        cursor: pointer
+    }
+
+    .btn.ghost {
+        background: none;
+        color: var(--accent);
+        border: 1px solid var(--line);
+        padding: 5px 9px;
+        font-size: 13px
+    }
+
+    .btn.del {
+        color: var(--warn)
+    }
+
+    .tw {
+        overflow-x: auto
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse
+    }
+
+    th,
+    td {
+        text-align: left;
+        padding: 10px 8px;
+        border-bottom: 1px solid var(--line);
+        white-space: nowrap
+    }
+
+    th {
+        font-size: 13px;
+        color: var(--mute);
+        font-weight: 600
+    }
+
+    td.act {
+        text-align: right;
+        display: flex;
+        gap: 6px;
+        justify-content: flex-end
+    }
+
+    .tag {
+        display: inline-block;
+        padding: 2px 9px;
+        border-radius: 99px;
+        font-size: 12px;
+        font-weight: 600;
+        background: var(--soft);
+        color: var(--accent)
+    }
+
+    .tag.warn {
+        background: color-mix(in srgb, var(--warn) 16%, transparent);
+        color: var(--warn)
+    }
+
+    .tag.ok {
+        background: color-mix(in srgb, var(--ok) 16%, transparent);
+        color: var(--ok)
+    }
+
+    .empty {
+        color: var(--mute);
+        padding: 14px 0
+    }
+
+    .top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap
+    }
+
+    .search {
+        max-width: 260px;
+        width: 100%
+    }
+
+    .card {
+        box-shadow: 0 8px 24px -14px rgba(11, 138, 126, .35)
+    }
+
+    .stat {
+        border-top: 3px solid var(--accent)
+    }
+
+    nav svg,
+    .hico svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        vertical-align: -4px;
+        margin-right: 6px
+    }
+
+    .hico {
+        display: inline-grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: var(--soft);
+        color: var(--accent);
+        margin-right: 10px;
+        vertical-align: middle
+    }
+
+    .hico svg {
+        margin: 0;
+        width: 20px;
+        height: 20px
+    }
+
+    .av {
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: var(--accent);
+        color: var(--accent-ink);
+        font-weight: 700;
+        font-size: 13px;
+        margin-right: 8px
+    }
+
+    .empty {
+        text-align: center
+    }
+
+    .empty::before {
+        content: "";
+        display: block;
+        width: 56px;
+        height: 56px;
+        margin: 0 auto 8px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230b8a7e' stroke-width='1.6' stroke-linecap='round'%3E%3Crect x='4' y='3' width='16' height='18' rx='2'/%3E%3Cpath d='M8 8h8M8 12h8M8 16h5'/%3E%3C/svg%3E") center/contain no-repeat
+    }
+
+    .hero {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        background: linear-gradient(120deg, var(--soft), var(--panel));
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        overflow: hidden;
+        margin-bottom: 16px
+    }
+
+    .ht {
+        padding: 24px 28px
+    }
+
+    .ht h1 {
+        font-size: 26px;
+        line-height: 1.2;
+        margin: 0 0 8px;
+        letter-spacing: -.02em
+    }
+
+    .ht p {
+        margin: 0 0 16px;
+        color: var(--mute);
+        max-width: 44ch
+    }
+
+    .hb {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap
+    }
+
+    .hb .ghost {
+        background: var(--panel);
+        padding: 9px 14px;
+        font-size: 14px
+    }
+
+    .hi svg {
+        display: block;
+        width: 100%;
+        height: auto
+    }
+
+    @media(max-width:700px) {
+        .hero {
+            grid-template-columns: 1fr
+        }
+    }
+
+    .stars {
+        color: #e0a100;
+        letter-spacing: 2px;
+        white-space: nowrap
+    }
+
+    .sos {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        background: #bf3a27;
+        color: #fff;
+        border-radius: 14px;
+        padding: 20px 24px;
+        margin-bottom: 16px
+    }
+
+    .sos h3 {
+        font-size: 20px;
+        margin: 0 0 2px
+    }
+
+    .sos p {
+        margin: 0;
+        opacity: .92
+    }
+
+    .sos a {
+        background: #fff;
+        color: #a52f1d;
+        font-weight: 700;
+        font-size: 24px;
+        border-radius: 10px;
+        padding: 8px 22px;
+        text-decoration: none
+    }
+
+    .num {
+        font-weight: 700;
+        color: var(--accent);
+        text-decoration: none
+    }
+
+    nav button.em {
+        color: var(--warn)
+    }
+
+    nav button.em.on {
+        background: color-mix(in srgb, var(--warn) 14%, transparent)
+    }
+</style>
+</head>
+
+<body>
+    <header>
+        <div class="bar">
+            <div class="brand"><i></i>Mandi Bahauddin Overseas Hospital</div>
+            <nav id="nav"></nav>
+        </div>
+    </header>
+    <main id="app"></main>
+    <script>
+        const BEDS = 50, CUR = "Rs ", KEY = "mbo-hms-v1";
+        function toast(m) {let t = document.getElementById("toast"); if (!t) {t = document.createElement("div"); t.id = "toast"; t.style.cssText = "position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:9"; document.body.appendChild(t)} t.textContent = m; t.hidden = false; clearTimeout(t.h); t.h = setTimeout(() => t.hidden = true, 3000)}
+        window.alert = toast;
+        const TABS = ["Dashboard", "Emergency", "Patients", "Doctors", "Appointments", "Laboratory", "Pharmacy", "Canteen", "Reviews", "Billing"];
+        let tab = "Dashboard", q = "";
+        const today = () => new Date().toISOString().slice(0, 10);
+        const uid = () => Math.random().toString(36).slice(2, 9);
+        const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+        function seed() {
+            const d = today(); return {
+                patients: [{id: "p1", name: "Amina Rahman", age: 34, gender: "Female", phone: "0300-1112233", condition: "Appendicitis", status: "Admitted"},
+                {id: "p2", name: "Bilal Hussain", age: 58, gender: "Male", phone: "0311-4445566", condition: "Hypertension", status: "Outpatient"},
+                {id: "p3", name: "Sara Khan", age: 7, gender: "Female", phone: "0322-7778899", condition: "Fever", status: "Outpatient"}],
+                doctors: [{id: "d1", name: "Dr. Imran Malik", dept: "General Surgery"}, {id: "d2", name: "Dr. Hina Aslam", dept: "Cardiology"}, {id: "d3", name: "Dr. Zoya Farooq", dept: "Pediatrics"}],
+                appts: [{id: "a1", pid: "p2", did: "d2", date: d, time: "10:00", status: "Scheduled"}, {id: "a2", pid: "p3", did: "d3", date: d, time: "11:30", status: "Scheduled"}],
+                bills: [{id: "b1", pid: "p1", desc: "Surgery and ward charges", amt: 85000, paid: false}, {id: "b2", pid: "p2", desc: "Consultation", amt: 1500, paid: true}],
+                duty: "d1", kin: [{id: "k1", pid: "p1", name: "Rahman Ali", rel: "Husband", phone: "0300-0000000"}], contacts: [{id: "e1", grp: "Emergency services", name: "Rescue 1122", role: "Ambulance, fire and rescue", phone: "1122"}, {id: "e2", grp: "Emergency services", name: "Police", role: "Police helpline", phone: "15"}, {id: "e3", grp: "Emergency services", name: "Edhi ambulance", role: "Ambulance service", phone: "115"}, {id: "e4", grp: "Emergency services", name: "Fire brigade", role: "Fire emergency", phone: "16"}, {id: "e5", grp: "Hospital team", name: "Emergency ward", role: "24-hour triage and casualty", phone: "Ext. 100"}, {id: "e6", grp: "Hospital team", name: "Blood bank", role: "Blood requests", phone: "Ext. 102"}, {id: "e7", grp: "Hospital team", name: "Security desk", role: "Security and crowd control", phone: "Ext. 105"}, {id: "e8", grp: "Hospital team", name: "Medical superintendent", role: "Escalation", phone: "Ext. 110"}],
+                reviews: [{id: "r1", who: "Bilal Hussain", about: "Dr. Hina Aslam", rate: 5, text: "Explained my treatment clearly and took time to listen.", date: d}, {id: "r2", who: "Amina Rahman", about: "Hospital in general", rate: 4, text: "Clean wards and caring staff. The wait at billing was a little long.", date: d}, {id: "r3", who: "Parent of Sara Khan", about: "Dr. Zoya Farooq", rate: 5, text: "Very gentle with children and easy to talk to.", date: d}], menu: [{id: "c1", name: "Chicken karahi with roti", cat: "Meal", price: 450, on: true}, {id: "c2", name: "Daal chawal", cat: "Diet meal", price: 220, on: true}, {id: "c3", name: "Khichdi (light diet)", cat: "Diet meal", price: 180, on: true}, {id: "c4", name: "Tea", cat: "Drink", price: 60, on: true}, {id: "c5", name: "Fresh juice", cat: "Drink", price: 150, on: false}], orders: [],
+                labs: [{id: "l1", pid: "p1", test: "Complete blood count", status: "Reported", result: "Normal"}, {id: "l2", pid: "p2", test: "Blood sugar (random)", status: "Ordered", result: ""}],
+                meds: [{id: "m1", name: "Paracetamol 500mg", qty: 420, min: 100, price: 3}, {id: "m2", name: "Amoxicillin 500mg", qty: 60, min: 80, price: 18}, {id: "m3", name: "Normal saline 500ml", qty: 150, min: 50, price: 140}]
+            }
+        }
+        let S;
+        try {S = JSON.parse(localStorage.getItem(KEY))} catch (e) {S = null}
+        if (!S || !S.patients) S = seed();
+        if (!S.menu) {S.menu = seed().menu; S.orders = []}
+        if (!S.reviews) S.reviews = seed().reviews;
+        if (!S.contacts) {const z = seed(); S.contacts = z.contacts; S.kin = z.kin; S.duty = z.duty}
+        if (!S.abroad || !(S.abroad.phone || S.abroad.wa || S.abroad.email)) S.abroad = {phone: "1055", wa: "+92 300 9500936", email: "mohtasiboverseasgcommissioner@gmail.com"};
+        const save = () => {try {localStorage.setItem(KEY, JSON.stringify(S))} catch (e) { } };
+        const pn = id => (S.patients.find(p => p.id === id) || {name: "Unknown"}).name;
+        const dn = id => (S.doctors.find(d => d.id === id) || {name: "Unknown"}).name;
+        const val = id => document.getElementById(id).value.trim();
+        const opts = (arr, f) => arr.map(x => `<option value="${x.id}">${esc(f(x))}</option>`).join("");
+        const table = (head, rows) => rows.length ? `<div class="tw"><table><thead><tr>${head.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.join("")}</tbody></table></div>` : `<div class="empty">Nothing here yet. Add a record above.</div>`;
+
+        function dash() {
+            const adm = S.patients.filter(p => p.status === "Admitted").length;
+            const td = S.appts.filter(a => a.date === today() && a.status === "Scheduled");
+            const due = S.bills.filter(b => !b.paid).reduce((s, b) => s + b.amt, 0);
+            const pct = Math.round(adm / BEDS * 100);
+            return `<div class="hero"><div class="ht"><h1>Welcome to Mandi Bahauddin Overseas Hospital</h1><p>${adm} patient${adm === 1 ? "" : "s"} admitted and ${td.length} appointment${td.length === 1 ? "" : "s"} today. Wishing the team a calm shift.</p><div class="hb"><button class="btn" onclick="tab='Patients';go()">Register patient</button><button class="btn ghost" onclick="tab='Appointments';go()">Book appointment</button></div></div><div class="hi"><svg viewBox="0 0 400 240" role="img" aria-label="Illustration of the hospital building with trees and an ambulance"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bfe9f5"/><stop offset="1" stop-color="#e9f9f3"/></linearGradient></defs><rect width="400" height="240" fill="url(#sk)"/><circle cx="330" cy="50" r="26" fill="#ffe08a"/><g fill="#fff" opacity=".9"><ellipse cx="90" cy="46" rx="34" ry="12"/><ellipse cx="116" cy="38" rx="24" ry="11"/><ellipse cx="250" cy="76" rx="28" ry="9"/></g><path d="M0 200Q100 170 200 190T400 180V240H0Z" fill="#a8dcc0"/><rect y="205" width="400" height="35" fill="#8fcfae"/><rect x="70" y="130" width="60" height="75" fill="#f4fbfb"/><rect x="270" y="130" width="60" height="75" fill="#f4fbfb"/><rect x="120" y="90" width="160" height="115" fill="#fff" stroke="#cfe3e6"/><rect x="120" y="82" width="160" height="12" fill="#0b8a7e"/><rect x="176" y="48" width="48" height="34" rx="6" fill="#0b8a7e"/><rect x="196" y="54" width="8" height="22" fill="#fff"/><rect x="189" y="61" width="22" height="8" fill="#fff"/><g fill="#bfe9f5"><rect x="134" y="104" width="18" height="22"/><rect x="164" y="104" width="18" height="22"/><rect x="218" y="104" width="18" height="22"/><rect x="248" y="104" width="18" height="22"/><rect x="134" y="138" width="18" height="22"/><rect x="164" y="138" width="18" height="22"/><rect x="218" y="138" width="18" height="22"/><rect x="248" y="138" width="18" height="22"/><rect x="82" y="146" width="14" height="18"/><rect x="104" y="146" width="14" height="18"/><rect x="282" y="146" width="14" height="18"/><rect x="304" y="146" width="14" height="18"/></g><rect x="184" y="165" width="32" height="40" fill="#0b8a7e" opacity=".85"/><rect x="36" y="175" width="6" height="30" fill="#8a6a4a"/><circle cx="39" cy="165" r="24" fill="#4fb287"/><rect x="357" y="178" width="6" height="27" fill="#8a6a4a"/><circle cx="360" cy="168" r="22" fill="#3fa57a"/><rect x="90" y="206" width="64" height="24" rx="4" fill="#fff" stroke="#cfe3e6"/><rect x="154" y="214" width="26" height="16" rx="3" fill="#e6f3f5" stroke="#cfe3e6"/><rect x="119" y="212" width="6" height="14" fill="#d6453d"/><rect x="115" y="216" width="14" height="6" fill="#d6453d"/><circle cx="110" cy="232" r="6" fill="#28404f"/><circle cx="166" cy="232" r="6" fill="#28404f"/></svg></div></div>
+ <h2>Dashboard</h2><div class="grid stats">
+ <div class="card stat"><b>${S.patients.length}</b><span>Registered patients</span></div>
+ <div class="card stat"><b>${td.length}</b><span>Appointments today</span></div>
+ <div class="card stat"><b>${S.doctors.length}</b><span>Doctors on staff</span></div>
+ <div class="card stat"><b>${S.labs.filter(l => l.status !== "Reported").length}</b><span>Pending lab tests</span></div>
+ <div class="card stat"><b>${S.meds.filter(m => m.qty <= m.min).length}</b><span>Low-stock medicines</span></div>
+ <div class="card stat"><b>${S.reviews.length ? (S.reviews.reduce((s, r) => s + r.rate, 0) / S.reviews.length).toFixed(1) + " ★" : "–"}</b><span>Average patient rating</span></div>
+ <div class="card stat"><b>${CUR}${due.toLocaleString()}</b><span>Unpaid invoices</span></div></div>
+ <div class="grid two"><div class="card"><h3>Bed occupancy</h3><div class="meter"><div style="width:${pct}%"></div></div>
+ <span>${adm} of ${BEDS} beds occupied (${pct}%)</span></div>
+ <div class="card"><h3>Today's appointments</h3>${td.length ? td.sort((a, b) => a.time.localeCompare(b.time)).map(a => `<div style="padding:6px 0;border-bottom:1px solid var(--line)"><b>${esc(a.time)}</b> ${esc(pn(a.pid))} with ${esc(dn(a.did))}</div>`).join("") : '<div class="empty">No appointments scheduled for today.</div>'}</div></div>`
+        }
+
+        function patients() {
+            const rows = S.patients.filter(p => (p.name + p.condition + p.phone).toLowerCase().includes(q.toLowerCase())).map(p => `<tr><td><span class="av">${esc((p.name[0] || "?").toUpperCase())}</span>${esc(p.name)}</td><td>${p.age}</td><td>${esc(p.gender)}</td><td>${esc(p.phone)}</td><td>${esc(p.condition)}</td>
+ <td><span class="tag ${p.status === "Admitted" ? "warn" : p.status === "Discharged" ? "ok" : ""}">${p.status}</span></td>
+ <td class="act">${p.status === "Admitted" ? `<button class="btn ghost" onclick="setStatus('${p.id}','Discharged')">Discharge</button>` : `<button class="btn ghost" onclick="admit('${p.id}')">Admit</button>`}<button class="btn ghost del" onclick="del('patients','${p.id}')">Delete</button></td></tr>`);
+            return `<div class="top"><h2>Patients</h2><input class="search" placeholder="Search name, condition or phone" value="${esc(q)}" oninput="q=this.value;go(true)"></div>
+ <div class="card"><div class="form"><label>Full name<input id="n"></label><label>Age<input id="ag" type="number" min="0" max="120"></label>
+ <label>Gender<select id="g"><option>Female</option><option>Male</option><option>Other</option></select></label><label>Phone<input id="ph"></label>
+ <label>Condition<input id="c"></label><button class="btn" onclick="addPatient()">Register patient</button></div>${table(["Name", "Age", "Gender", "Phone", "Condition", "Status", ""], rows)}</div>`
+        }
+
+        function doctors() {
+            const rows = S.doctors.map(d => `<tr><td><span class="av">${esc((d.name.replace(/^Dr\.?\s*/i, "")[0] || "?").toUpperCase())}</span>${esc(d.name)}</td><td>${esc(d.dept)}</td><td>${S.appts.filter(a => a.did === d.id && a.status === "Scheduled").length}</td><td class="act"><button class="btn ghost del" onclick="del('doctors','${d.id}')">Remove</button></td></tr>`);
+            return `<h2>Doctors</h2><div class="card"><div class="form"><label>Name<input id="dn"></label><label>Department<input id="dd"></label><button class="btn" onclick="addDoctor()">Add doctor</button></div>${table(["Name", "Department", "Upcoming visits", ""], rows)}</div>`
+        }
+
+        function appts() {
+            const rows = [...S.appts].sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time)).map(a => `<tr><td>${esc(a.date)}</td><td>${esc(a.time)}</td><td>${esc(pn(a.pid))}</td><td>${esc(dn(a.did))}</td>
+ <td><span class="tag ${a.status === "Completed" ? "ok" : a.status === "Cancelled" ? "warn" : ""}">${a.status}</span></td>
+ <td class="act">${a.status === "Scheduled" ? `<button class="btn ghost" onclick="apptStatus('${a.id}','Completed')">Complete</button><button class="btn ghost" onclick="apptStatus('${a.id}','Cancelled')">Cancel</button>` : ""}<button class="btn ghost del" onclick="del('appts','${a.id}')">Delete</button></td></tr>`);
+            const ok = S.patients.length && S.doctors.length;
+            return `<h2>Appointments</h2><div class="card">${ok ? `<div class="form"><label>Patient<select id="ap">${opts(S.patients, p => p.name)}</select></label><label>Doctor<select id="ad">${opts(S.doctors, d => d.name + " (" + d.dept + ")")}</select></label>
+ <label>Date<input id="adt" type="date" value="${today()}"></label><label>Time<input id="atm" type="time" value="09:00"></label><button class="btn" onclick="addAppt()">Book appointment</button></div>` : '<div class="empty">Register at least one patient and one doctor to book appointments.</div>'}${table(["Date", "Time", "Patient", "Doctor", "Status", ""], rows)}</div>`
+        }
+
+        function billing() {
+            const rows = S.bills.map(b => `<tr><td>${esc(pn(b.pid))}</td><td>${esc(b.desc)}</td><td>${CUR}${b.amt.toLocaleString()}</td><td><span class="tag ${b.paid ? "ok" : "warn"}">${b.paid ? "Paid" : "Unpaid"}</span></td>
+ <td class="act">${b.paid ? "" : `<button class="btn ghost" onclick="pay('${b.id}')">Mark paid</button>`}<button class="btn ghost del" onclick="del('bills','${b.id}')">Delete</button></td></tr>`);
+            return `<h2>Billing</h2><div class="card">${S.patients.length ? `<div class="form"><label>Patient<select id="bp">${opts(S.patients, p => p.name)}</select></label><label>Description<input id="bd"></label>
+ <label>Amount<input id="ba" type="number" min="0" step="0.01"></label><button class="btn" onclick="addBill()">Create invoice</button></div>`: '<div class="empty">Register a patient before creating invoices.</div>'}${table(["Patient", "Description", "Amount", "Status", ""], rows)}</div>`
+        }
+
+        function addPatient() {
+            const n = val("n"); if (!n) return alert("Enter the patient's name.");
+            S.patients.push({id: uid(), name: n, age: +val("ag") || 0, gender: val("g"), phone: val("ph"), condition: val("c") || "Not specified", status: "Outpatient"}); go()
+        }
+        function admit(id) {if (S.patients.filter(p => p.status === "Admitted").length >= BEDS) return alert("All beds are occupied."); setStatus(id, "Admitted")}
+        function setStatus(id, s) {S.patients.find(p => p.id === id).status = s; go()}
+        function addDoctor() {const n = val("dn"); if (!n) return alert("Enter the doctor's name."); S.doctors.push({id: uid(), name: n, dept: val("dd") || "General"}); go()}
+        function addAppt() {
+            if (!val("adt") || !val("atm")) return alert("Choose a date and time.");
+            const clash = S.appts.some(a => a.did === val("ad") && a.date === val("adt") && a.time === val("atm") && a.status === "Scheduled");
+            if (clash) return alert("This doctor already has an appointment at that time.");
+            S.appts.push({id: uid(), pid: val("ap"), did: val("ad"), date: val("adt"), time: val("atm"), status: "Scheduled"}); go()
+        }
+        function apptStatus(id, s) {S.appts.find(a => a.id === id).status = s; go()}
+        function addBill() {
+            const a = parseFloat(val("ba")); if (!val("bd") || !(a >= 0)) return alert("Enter a description and an amount.");
+            S.bills.push({id: uid(), pid: val("bp"), desc: val("bd"), amt: a, paid: false}); go()
+        }
+        function pay(id) {S.bills.find(b => b.id === id).paid = true; go()}
+        function del(k, id) {
+            S[k] = S[k].filter(x => x.id !== id);
+            if (k === "patients") {["appts", "bills", "labs", "orders", "kin"].forEach(t => S[t] = S[t].filter(x => x.pid !== id))}
+            if (k === "doctors") S.appts = S.appts.filter(x => x.did !== id); go()
+        }
+
+        function lab() {
+            const rows = S.labs.map(l => `<tr><td>${esc(pn(l.pid))}</td><td>${esc(l.test)}</td><td><span class="tag ${l.status === "Reported" ? "ok" : l.status === "Ordered" ? "warn" : ""}">${l.status}</span></td><td>${l.status === "Sample collected" ? `<input id="r_${l.id}" placeholder="Result" style="width:150px">` : esc(l.result || "-")}</td><td class="act">${l.status === "Ordered" ? `<button class="btn ghost" onclick="labNext('${l.id}')">Collect sample</button>` : l.status === "Sample collected" ? `<button class="btn ghost" onclick="labNext('${l.id}')">Save result</button>` : ""}<button class="btn ghost del" onclick="del('labs','${l.id}')">Delete</button></td></tr>`);
+            return `<h2>Laboratory</h2><div class="card">${S.patients.length ? `<div class="form"><label>Patient<select id="lp">${opts(S.patients, p => p.name)}</select></label><label>Test<input id="lt" placeholder="e.g. Urine routine"></label><label>Fee<input id="lf" type="number" min="0"></label><button class="btn" onclick="addLab()">Order test</button></div>` : '<div class="empty">Register a patient first.</div>'}${table(["Patient", "Test", "Status", "Result", ""], rows)}</div>`
+        }
+        function addLab() {
+            const t = val("lt"); if (!t) return alert("Enter the test name."); S.labs.push({id: uid(), pid: val("lp"), test: t, status: "Ordered", result: ""});
+            const f = parseFloat(val("lf")); if (f > 0) S.bills.push({id: uid(), pid: val("lp"), desc: "Lab: " + t, amt: f, paid: false}); go()
+        }
+        function labNext(id) {const l = S.labs.find(x => x.id === id); if (l.status === "Ordered") l.status = "Sample collected"; else {const r = val("r_" + id); if (!r) return alert("Enter the result first."); l.result = r; l.status = "Reported"} go()}
+        function pharmacy() {
+            const rows = S.meds.map(m => `<tr><td>${esc(m.name)}</td><td>${m.qty}</td><td>${CUR}${m.price}</td><td><span class="tag ${m.qty <= m.min ? "warn" : "ok"}">${m.qty <= m.min ? "Low stock" : "In stock"}</span></td><td class="act"><input id="q_${m.id}" type="number" min="1" value="1" style="width:70px"><button class="btn ghost" onclick="stock('${m.id}',-1)">Dispense</button><button class="btn ghost" onclick="stock('${m.id}',1)">Restock</button><button class="btn ghost del" onclick="del('meds','${m.id}')">Delete</button></td></tr>`);
+            return `<h2>Pharmacy</h2><div class="card"><div class="form"><label>Medicine<input id="mn"></label><label>Quantity<input id="mq" type="number" min="0"></label><label>Reorder level<input id="mm" type="number" min="0"></label><label>Unit price<input id="mp" type="number" min="0"></label><button class="btn" onclick="addMed()">Add medicine</button></div>${table(["Medicine", "In stock", "Unit price", "Status", ""], rows)}</div>`
+        }
+        function addMed() {const n = val("mn"); if (!n) return alert("Enter the medicine name."); S.meds.push({id: uid(), name: n, qty: +val("mq") || 0, min: +val("mm") || 0, price: +val("mp") || 0}); go()}
+        function stock(id, d) {const m = S.meds.find(x => x.id === id), n = Math.max(1, +val("q_" + id) || 1); if (d < 0 && n > m.qty) return alert("Not enough stock."); m.qty += d * n; go()}
+        function canteen() {
+            const mrows = S.menu.map(m => `<tr><td>${esc(m.name)}</td><td>${esc(m.cat)}</td><td>${CUR}${m.price}</td><td><span class="tag ${m.on ? "ok" : "warn"}">${m.on ? "Available" : "Sold out"}</span></td><td class="act"><button class="btn ghost" onclick="toggleMenu('${m.id}')">${m.on ? "Mark sold out" : "Mark available"}</button><button class="btn ghost del" onclick="del('menu','${m.id}')">Delete</button></td></tr>`);
+            const orows = [...S.orders].reverse().map(o => `<tr><td>${esc(o.item)} × ${o.qty}</td><td>${o.pid ? esc(pn(o.pid)) : "Walk-in"}</td><td>${CUR}${o.total}</td><td><span class="tag ${o.done ? "ok" : "warn"}">${o.done ? "Served" : "Preparing"}</span></td><td class="act">${o.done ? "" : `<button class="btn ghost" onclick="serve('${o.id}')">Mark served</button>`}<button class="btn ghost del" onclick="del('orders','${o.id}')">Delete</button></td></tr>`);
+            const av = S.menu.filter(m => m.on);
+            return `<h2>Canteen</h2><div class="grid"><div class="card"><h3>Place an order</h3>${av.length ? `<div class="form"><label>Item<select id="oi">${opts(av, m => m.name + " (" + CUR + m.price + ")")}</select></label><label>Quantity<input id="oq" type="number" min="1" value="1"></label><label>Serve to<select id="op"><option value="">Walk-in (pay at counter)</option>${opts(S.patients, p => p.name + " (charge to bill)")}</select></label><button class="btn" onclick="addOrder()">Place order</button></div>` : '<div class="empty">No items available. Add or restock the menu below.</div>'}${table(["Order", "For", "Total", "Status", ""], orows)}</div>
+ <div class="card"><h3>Menu</h3><div class="form"><label>Item<input id="mni"></label><label>Category<select id="mc"><option>Meal</option><option>Diet meal</option><option>Snack</option><option>Drink</option></select></label><label>Price<input id="mpr" type="number" min="0"></label><button class="btn" onclick="addMenu()">Add to menu</button></div>${table(["Item", "Category", "Price", "Status", ""], mrows)}</div></div>`
+        }
+        function addMenu() {const n = val("mni"), p = parseFloat(val("mpr")); if (!n || !(p >= 0)) return alert("Enter an item name and price."); S.menu.push({id: uid(), name: n, cat: val("mc"), price: p, on: true}); go()}
+        function toggleMenu(id) {const m = S.menu.find(x => x.id === id); m.on = !m.on; go()}
+        function addOrder() {
+            const m = S.menu.find(x => x.id === val("oi")), n = Math.max(1, +val("oq") || 1), pid = val("op"), total = m.price * n;
+            S.orders.push({id: uid(), item: m.name, qty: n, pid, total, done: false});
+            if (pid) S.bills.push({id: uid(), pid, desc: "Canteen: " + m.name + " × " + n, amt: total, paid: false}); go()
+        }
+        function serve(id) {S.orders.find(o => o.id === id).done = true; go()}
+        const stars = n => "★".repeat(n) + "☆".repeat(5 - n);
+        function reviews() {
+            const n = S.reviews.length, avg = n ? S.reviews.reduce((s, r) => s + r.rate, 0) / n : 0;
+            const bars = [5, 4, 3, 2, 1].map(k => {const c = S.reviews.filter(r => r.rate === k).length; return `<div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="width:28px">${k} ★</span><div class="meter" style="flex:1;margin:4px 0"><div style="width:${n ? c / n * 100 : 0}%"></div></div><span style="width:20px;text-align:right;color:var(--mute)">${c}</span></div>`}).join("");
+            const targets = ["Hospital in general", ...S.doctors.map(d => d.name), "Laboratory", "Pharmacy", "Canteen"];
+            const list = [...S.reviews].reverse().map(r => `<div class="card"><div class="top"><div><span class="av">${esc((r.who[0] || "A").toUpperCase())}</span><b>${esc(r.who)}</b></div><span class="stars" title="${r.rate} out of 5">${stars(r.rate)}</span></div><div style="margin:8px 0 6px">${esc(r.text)}</div><div class="top"><span><span class="tag">${esc(r.about)}</span> <span style="color:var(--mute);font-size:13px">${esc(r.date)}</span></span><button class="btn ghost del" onclick="del('reviews','${r.id}')">Delete</button></div></div>`).join("");
+            return `<h2>Patient reviews</h2><div class="grid two"><div class="card"><h3>Overall rating</h3><div style="display:flex;align-items:center;gap:14px"><b style="font-size:40px;line-height:1">${n ? avg.toFixed(1) : "–"}</b><div><div class="stars">${stars(Math.round(avg))}</div><span style="color:var(--mute);font-size:13px">${n} review${n === 1 ? "" : "s"}</span></div></div><div style="margin-top:10px">${bars}</div></div>
+ <div class="card"><h3>Leave a review</h3><div class="form"><label>Your name<input id="rn" placeholder="Optional"></label><label>Review about<select id="ra">${targets.map(t => `<option>${esc(t)}</option>`).join("")}</select></label><label>Rating<select id="rr"><option value="5">5 stars, excellent</option><option value="4">4 stars, good</option><option value="3">3 stars, fair</option><option value="2">2 stars, poor</option><option value="1">1 star, very poor</option></select></label><label>Comment<input id="rc"></label></div><button class="btn" onclick="addReview()">Submit review</button></div></div>
+ <div class="grid" style="margin-top:14px">${list || '<div class="card empty">No reviews yet. Be the first to share feedback.</div>'}</div>`
+        }
+        function addReview() {const t = val("rc"); if (!t) return alert("Write a short comment first."); S.reviews.push({id: uid(), who: val("rn") || "Anonymous", about: val("ra"), rate: +val("rr"), text: t, date: today()}); go()}
+        const pkt = () => new Date().toLocaleTimeString("en-GB", {timeZone: "Asia/Karachi", hour: "2-digit", minute: "2-digit"});
+        function saveAbroad() {const p = val("ap1"), w = val("aw"), e = val("ae"); if (!p && !w && !e) return alert("Enter at least one overseas contact."); S.abroad = {phone: p || S.abroad.phone, wa: w || S.abroad.wa, email: e || S.abroad.email}; go()}
+        const tel = p => /^ext/i.test(p) ? `<b>${esc(p)}</b>` : `<a class="num" href="tel:${esc(String(p).replace(/[^0-9+]/g, ""))}">${esc(p)}</a>`;
+        function emergency() {
+            const grp = g => S.contacts.filter(c => c.grp === g).map(c => `<tr><td><b>${esc(c.name)}</b></td><td>${esc(c.role)}</td><td>${tel(c.phone)}</td><td class="act"><button class="btn ghost del" onclick="del('contacts','${c.id}')">Delete</button></td></tr>`);
+            const kin = S.kin.map(k => `<tr><td>${esc(pn(k.pid))}</td><td>${esc(k.name)} (${esc(k.rel)})</td><td>${tel(k.phone)}</td><td class="act"><button class="btn ghost del" onclick="del('kin','${k.id}')">Delete</button></td></tr>`);
+            const duty = S.doctors.find(d => d.id === S.duty);
+            return `<h2>Emergency contacts</h2>
+ <div class="sos"><div><h3>Medical emergency? Call Rescue 1122 now</h3><p>Stay with the patient, keep them calm and do not give food or drink.</p></div><a href="tel:1122">1122</a></div>
+ <div class="grid two" style="margin-bottom:14px"><div class="card"><h3>Doctor on duty</h3>${duty ? `<b style="font-size:18px">${esc(duty.name)}</b><div style="color:var(--mute)">${esc(duty.dept)}</div>` : '<div class="empty">No doctor selected.</div>'}<label style="margin-top:10px">Change doctor on duty<select onchange="S.duty=this.value;go()"><option value="">Select a doctor</option>${S.doctors.map(d => `<option value="${d.id}"${d.id === S.duty ? " selected" : ""}>${esc(d.name)}</option>`).join("")}</select></label></div>
+ <div class="card"><h3>Add an emergency contact</h3><div class="form"><label>Name<input id="en"></label><label>Role<input id="er"></label><label>Phone or extension<input id="ep"></label><label>Group<select id="eg"><option>Emergency services</option><option>Hospital team</option></select></label><button class="btn" onclick="addContact()">Add contact</button></div></div></div>
+ <div class="card" style="margin-bottom:14px"><h3>Calling from overseas</h3>${S.abroad.phone || S.abroad.wa || S.abroad.email ? `<div style="display:grid;gap:4px">${S.abroad.phone ? `<div>Helpline: ${tel(S.abroad.phone)}</div>` : ""}${S.abroad.wa ? `<div>WhatsApp: ${tel(S.abroad.wa)}</div>` : ""}${S.abroad.email ? `<div>Email: <b>${esc(S.abroad.email)}</b></div>` : ""}</div>` : '<div class="empty">No overseas contact saved yet. Add the international number below.</div>'}<p style="color:var(--mute);font-size:13px;margin:8px 0">Pakistan time now: <b>${pkt()}</b>. Dial +92 and drop the leading 0 of any local number. Short helpline numbers like 1055 usually work only inside Pakistan, so use WhatsApp or email from abroad.</p><div class="form"><label>International phone<input id="ap1" placeholder="+92 ..."></label><label>WhatsApp<input id="aw" placeholder="+92 ..."></label><label>Email<input id="ae" type="email"></label><button class="btn" onclick="saveAbroad()">Save overseas contact</button></div></div>
+ <div class="card" style="margin-bottom:14px"><h3>Emergency services</h3>${table(["Name", "Role", "Call", ""], grp("Emergency services"))}</div>
+ <div class="card" style="margin-bottom:14px"><h3>Hospital emergency team</h3>${table(["Name", "Role", "Call", ""], grp("Hospital team"))}</div>
+ <div class="card"><h3>Patients' family contacts</h3>${S.patients.length ? `<div class="form"><label>Patient<select id="kp">${opts(S.patients, p => p.name)}</select></label><label>Contact name<input id="kn"></label><label>Relation<input id="kr" placeholder="e.g. Brother"></label><label>Phone<input id="kt"></label><button class="btn" onclick="addKin()">Save contact</button></div>` : ""}${table(["Patient", "Family contact", "Call", ""], kin)}</div>`
+        }
+        function addContact() {const n = val("en"), p = val("ep"); if (!n || !p) return alert("Enter a name and a phone number."); S.contacts.push({id: uid(), grp: val("eg"), name: n, role: val("er") || "Emergency contact", phone: p}); go()}
+        function addKin() {const n = val("kn"), t = val("kt"); if (!n || !t) return alert("Enter the contact's name and phone number."); S.kin.push({id: uid(), pid: val("kp"), name: n, rel: val("kr") || "Family", phone: t}); go()}
+        const ICO = {Dashboard: '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>', Patients: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>', Doctors: '<path d="M6 3v6a4 4 0 0 0 8 0V3"/><path d="M10 13v2a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="11" r="2"/>', Appointments: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>', Laboratory: '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/>', Pharmacy: '<rect x="2" y="8" width="20" height="8" rx="4" transform="rotate(-35 12 12)"/><path d="M9 9l6 6"/>', Emergency: '<path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/>', Reviews: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>', Canteen: '<path d="M6 3v7a2 2 0 0 0 4 0V3M8 10v11"/><path d="M17 3c-2.5 2-2.5 7 0 9v9"/>', Billing: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>'};
+        const ic = t => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICO[t] || ""}</svg>`;
+        function go(keep) {
+            save();
+            document.getElementById("nav").innerHTML = TABS.map(t => `<button class="${t === tab ? "on" : ""} ${t === "Emergency" ? "em" : ""}" onclick="tab='${t}';q='';go()">${ic(t)}${t}</button>`).join("");
+            const f = {Dashboard: dash, Patients: patients, Doctors: doctors, Appointments: appts, Laboratory: lab, Pharmacy: pharmacy, Canteen: canteen, Reviews: reviews, Emergency: emergency, Billing: billing}[tab];
+            const app = document.getElementById("app"); app.innerHTML = f();
+            const h = app.querySelector("h2"); if (h) h.innerHTML = `<span class="hico">${ic(tab)}</span>` + h.innerHTML;
+            if (keep) {const s = app.querySelector(".search"); if (s) {s.focus(); s.setSelectionRange(q.length, q.length)} }
+        }
+        go();
+    </script>
+</body>
+
+</html>
